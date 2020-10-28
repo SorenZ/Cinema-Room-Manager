@@ -1,12 +1,16 @@
 package cinema;
 
-import javax.lang.model.util.ElementScanner6;
 import java.util.Scanner;
 
 public class Cinema {
 
+    final static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+
+        int occupiedRow = 0;
+        int occupiedColumn = 0;
+        boolean isExit = false;
 
         System.out.println("Enter the number of rows:");
         int rows = scanner.nextInt();
@@ -14,8 +18,38 @@ public class Cinema {
         System.out.println("Enter the number of seats in each row:");
         int columns = scanner.nextInt();
 
-        printSeats(rows, columns, 0, 0);
+        boolean[][] boughTickets = new boolean[rows][columns];
 
+
+
+        do {
+            System.out.println();
+
+            printMenu();
+            var chose = scanner.nextInt();
+
+            System.out.println();
+
+            switch (chose) {
+                case 0:
+                    isExit = true;
+                    break;
+                case 1:
+                    printSeats(rows,columns, boughTickets);
+                    break;
+                case 2:
+                    buyTicket(rows, columns, boughTickets);
+                    break;
+
+                default:
+                    throw new IllegalStateException("Unexpected value");
+            }
+        } while (!isExit);
+
+    }
+
+    private static void buyTicket(int rows, int columns, boolean[][] boughTickets)
+    {
         System.out.println("Enter a row number:");
         int occupiedRow = scanner.nextInt();
 
@@ -23,12 +57,15 @@ public class Cinema {
         int occupiedColumn = scanner.nextInt();
 
         System.out.println("Ticket price: $" + calculateSeatPrice(rows,columns, occupiedRow, occupiedColumn));
-        System.out.println();
-        printSeats(rows, columns, occupiedRow, occupiedColumn);
 
-//        System.out.println("Total income:");
-//        System.out.println("$" + calculateIncome(rows, columns));
+        boughTickets[occupiedRow-1][occupiedColumn-1] = true;
+    }
 
+    private static void printMenu()
+    {
+        System.out.println("1. Show the seats");
+        System.out.println("2. Buy a ticket");
+        System.out.println("0. Exit");
     }
 
     private static int calculateIncome(int rows, int columns) {
@@ -59,7 +96,7 @@ public class Cinema {
                 : 8;
     }
 
-    private static void printSeats(int rows, int columns, int occupiedRow, int occupiedColumn) {
+    private static void printSeats(int rows, int columns, boolean[][] boughTickets) {
         System.out.println("cinema.Cinema:");
 
         System.out.print(" ");
@@ -72,7 +109,7 @@ public class Cinema {
         for (int i = 1; i <= rows; i++) {
             System.out.print(i);
             for (int j = 1; j <= columns; j++) {
-                System.out.print((occupiedRow == i && occupiedColumn == j) ? " B" : " S");
+                System.out.print((boughTickets[i-1][j-1]) ? " B" : " S");
             }
             System.out.println();
         }
