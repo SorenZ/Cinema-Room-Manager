@@ -20,8 +20,6 @@ public class Cinema {
 
         boolean[][] boughTickets = new boolean[rows][columns];
 
-
-
         do {
             System.out.println();
 
@@ -40,12 +38,70 @@ public class Cinema {
                 case 2:
                     buyTicket(rows, columns, boughTickets);
                     break;
+                case 3:
+                    printStatistic(rows, columns, boughTickets);
+                    break;
 
                 default:
                     throw new IllegalStateException("Unexpected value");
             }
         } while (!isExit);
 
+    }
+
+    private static void printStatistic(int rows, int columns,boolean[][] boughTickets)
+    {
+        int tickets = numberOfPurchasedTicket(rows,columns,boughTickets);
+        float percent = (tickets * 100 ) / (rows * columns);
+        int currentIncome = calculateCurrentIncome(rows,columns, boughTickets);
+        int totalIncome = calculateTotalIncome(rows, columns);
+
+
+        System.out.printf("Number of purchased tickets: %d\n", tickets);
+        System.out.printf("Percentage: %.2f%%\n", percent);
+        System.out.printf("Current income: %d\n", currentIncome);
+        System.out.printf("Total income: %d\n", totalIncome);
+    }
+
+    private static int calculateCurrentIncome(int rows, int columns, boolean[][] boughTickets)
+    {
+        int currentIncome = 0;
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= columns; j++) {
+                if(boughTickets[i-1][j-1])
+                    currentIncome+= calculateSeatPrice(rows, columns, i, j);
+            }
+        }
+
+        return currentIncome;
+    }
+
+    private static int numberOfPurchasedTicket(int rows, int columns, boolean[][] boughTickets)
+    {
+        int tickets = 0;
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= columns; j++) {
+                if(boughTickets[i-1][j-1])
+                    tickets++;
+            }
+        }
+
+        return tickets;
+    }
+
+    private static int calculateTotalIncome(int rows, int columns) {
+        var totalSeats = rows * columns;
+
+        if(totalSeats <= 60)
+            return totalSeats * 10;
+
+        int firstHalf = rows / 2;
+
+        int secondHalf = firstHalf + (((rows % 2) == 0) ? 0 : 1);
+
+        return firstHalf * columns * 10 + secondHalf * columns * 8;
     }
 
     private static void buyTicket(int rows, int columns, boolean[][] boughTickets)
@@ -65,21 +121,11 @@ public class Cinema {
     {
         System.out.println("1. Show the seats");
         System.out.println("2. Buy a ticket");
+        System.out.println("2. Statistics");
         System.out.println("0. Exit");
     }
 
-    private static int calculateIncome(int rows, int columns) {
-        var totalSeats = rows * columns;
 
-        if(totalSeats <= 60)
-            return totalSeats * 10;
-
-        int firstHalf = rows / 2;
-
-        int secondHalf = firstHalf + (((rows % 2) == 0) ? 0 : 1);
-
-        return firstHalf * columns * 10 + secondHalf * columns * 8;
-    }
 
     private static int calculateSeatPrice(int rows, int columns, int occupiedRow, int occupiedColumn) {
         var totalSeats = rows * columns;
