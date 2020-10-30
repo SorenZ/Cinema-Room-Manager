@@ -52,15 +52,15 @@ public class Cinema {
     private static void printStatistic(int rows, int columns,boolean[][] boughTickets)
     {
         int tickets = numberOfPurchasedTicket(rows,columns,boughTickets);
-        float percent = (tickets * 100 ) / (rows * columns);
+        float percent = (tickets * 100f ) / (float)(rows * columns);
         int currentIncome = calculateCurrentIncome(rows,columns, boughTickets);
         int totalIncome = calculateTotalIncome(rows, columns);
 
 
         System.out.printf("Number of purchased tickets: %d\n", tickets);
         System.out.printf("Percentage: %.2f%%\n", percent);
-        System.out.printf("Current income: %d\n", currentIncome);
-        System.out.printf("Total income: %d\n", totalIncome);
+        System.out.printf("Current income: $%d\n", currentIncome);
+        System.out.printf("Total income: $%d\n", totalIncome);
     }
 
     private static int calculateCurrentIncome(int rows, int columns, boolean[][] boughTickets)
@@ -106,11 +106,28 @@ public class Cinema {
 
     private static void buyTicket(int rows, int columns, boolean[][] boughTickets)
     {
-        System.out.println("Enter a row number:");
-        int occupiedRow = scanner.nextInt();
+        int occupiedRow = 0;
+        int occupiedColumn = 0;
 
-        System.out.println("Enter a seat number in that row:");
-        int occupiedColumn = scanner.nextInt();
+        while(true)
+        {
+            System.out.println("Enter a row number:");
+            occupiedRow = scanner.nextInt();
+
+            System.out.println("Enter a seat number in that row:");
+            occupiedColumn = scanner.nextInt();
+
+            if(occupiedRow > rows || occupiedColumn > columns) {
+                System.out.println("Wrong input!");
+                continue;
+            }
+
+            if(! boughTickets[occupiedRow-1][occupiedColumn-1]) {
+                break;
+            }
+
+            System.out.println("That ticket has already been purchased!");
+        }
 
         System.out.println("Ticket price: $" + calculateSeatPrice(rows,columns, occupiedRow, occupiedColumn));
 
